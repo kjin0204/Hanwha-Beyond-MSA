@@ -1,0 +1,16 @@
+server:
+  #  port: 8111
+  port : 0
+
+spring:
+  application:
+    name: 1st-service
+eureka:
+  # 유레카 서버 대쉬보드에 서버로 스케일 아웃 된 인스턴스들을 구분하는 이름이 status에 작성되도록 설정 추가1
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:7861/eureka
