@@ -16,13 +16,16 @@ spring:
           # ?? ??? ? ???? ???? /first-service?? ???? ???? ?? ????? ???? ? + ?? ??
           # ???? built in ?? + custom ??(feat. spring security) ?? ??
           filters:
-            - RewritePath=/first-service/(?<segment>.*), /$\{segemnt}
+            - RewritePath=/first-service/(?<segment>.*), /$\{segment}
+            - AddRequestHeader=first-request, firest-request-header
+            - AddResponseHeader=first-response, first-response-header
         - id: 1st-service-get
           uri: lb://2ND-SERVICE
           predicates:
             - Path=/second-service/**
           filters:
-            - RewritePath=/second-service/(?<segment>.*), /$\{segemnt}
+            - RewritePath=/second-service/(?<segment>.*), /$\{segment}
+# gateway? routes ??? ?? ??(? ??? http method ?? ??)? ?? ???? ??
 eureka:
   client:
     register-with-eureka: true
