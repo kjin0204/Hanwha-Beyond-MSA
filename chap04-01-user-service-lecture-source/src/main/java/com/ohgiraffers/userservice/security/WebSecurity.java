@@ -11,10 +11,12 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.Collections;
 
 /* 설명. Spring Security 모듈 추가 후 default 로그인 페이지 제거 및 인가 설정 */
+/* 필기. 조립 + 인가를 하는 부분 */
 @Configuration
 public class WebSecurity {
 
@@ -34,7 +36,7 @@ public class WebSecurity {
     }
 
     @Bean
-    protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    protected SecurityFilterChain securityFilterChain(HttpSecurity http, JwtUtil jwtUtil) throws Exception {
 
         http.csrf(csrf -> csrf.disable());
         http.authorizeHttpRequests(authz ->
@@ -42,6 +44,7 @@ public class WebSecurity {
 //                        .requestMatchers(HttpMethod.GET, "/**").hasRole("ADMIN")
                                         .anyRequest().authenticated()
                 )
+                /* 설명. Session 방식이 아닌 JWT Token 방식을 사용하겠다. */
                 /* 설명. Session 방식이 아닌 JWT Token 방식으로 인증된 회원(Authentication)을 Local Thread로 지정하겠다. */
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -49,8 +52,9 @@ public class WebSecurity {
         /* 설명. 매니저를 지닌 필터 등록 */
         http.addFilter(getAuthenticationFilter(authenticationManager()));
 
-        /* 설명. Session 방식이 아닌 JWT Token 방식을 사용하겠다. */
-
+        /* 설명. 로그인 이후 토큰을 들고 온다면 JwtFilter를 추가해서 검증하도록 함 */
+        /* 설명. UsernamePasswordAuthenticationFilter 보다 JwtFilter가 먼저 실행 하게 됌 */
+        http.addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
