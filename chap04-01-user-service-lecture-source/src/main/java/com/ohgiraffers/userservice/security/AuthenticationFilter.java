@@ -2,6 +2,9 @@ package com.ohgiraffers.userservice.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ohgiraffers.userservice.dto.RequestLoginDTO;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,11 +16,15 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -99,7 +106,24 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         log.info("만료 시간: {}", env.getProperty("token.expiration_time"));
         
         /* 설명. 2. 재료를 활용한 JWT 토큰 제작(feat. build.gradle에 라이브러리 추가) */
+        Claims claims = Jwts.claims().setSubject(id);
+        claims.put("auth",roles);
 
+        String token = Jwts.builder()
+                .setClaims(claims)      // 등록된 클레임 + 비공개 클레임
+                .setExpiration(new Date(System.currentTimeMillis()
+                + Long.parseLong(env.getProperty("token.expiration_time"))))
+                .signWith(SignatureAlgorithm.HS512, env.getProperty("token.secret"))
+                .compact();
+
+        response.addHeader("token",token);
+
+        /* 설명. 로그인에 성공한 사람의 정보(Authentication 객체)를 활용하고 싶다면(ex. Controller) */
+        /* 설명. 1. 코드 상에서 */
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        /* 설명. 2. 매겨 변수에서 */
+//        @AuthenticationPrincipal UserDetails user;
     }
 
 

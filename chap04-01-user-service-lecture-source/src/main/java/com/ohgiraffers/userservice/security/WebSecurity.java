@@ -9,6 +9,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
 import java.util.Collections;
@@ -21,7 +22,7 @@ public class WebSecurity {
     private Environment env;        // JWT Token의 payload에 만료시간 만들기위해 추가
 
     @Autowired
-    public WebSecurity(JwtAuthenticationProvider jwtAuthenticationProvider , Environment env) {
+    public WebSecurity(JwtAuthenticationProvider jwtAuthenticationProvider, Environment env) {
         this.jwtAuthenticationProvider = jwtAuthenticationProvider;
         this.env = env;
     }
@@ -37,22 +38,26 @@ public class WebSecurity {
 
         http.csrf(csrf -> csrf.disable());
         http.authorizeHttpRequests(authz ->
-                        authz.requestMatchers("/**").permitAll()
+                                authz.requestMatchers("/**").permitAll()
 //                        .requestMatchers(HttpMethod.GET, "/**").hasRole("ADMIN")
-                                .anyRequest().authenticated()
-        );
+                                        .anyRequest().authenticated()
+                )
+                /* 설명. Session 방식이 아닌 JWT Token 방식으로 인증된 회원(Authentication)을 Local Thread로 지정하겠다. */
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         /* 설명. 매니저를 지닌 필터 등록 */
         http.addFilter(getAuthenticationFilter(authenticationManager()));
 
         /* 설명. Session 방식이 아닌 JWT Token 방식을 사용하겠다. */
 
+
         return http.build();
     }
 
     /* 설명. Filter를 등록하기 위해 사용하는 메소드 */
     private Filter getAuthenticationFilter(AuthenticationManager authenticationManager) {
-        return new AuthenticationFilter(authenticationManager,env);
+        return new AuthenticationFilter(authenticationManager, env);
     }
 
 
