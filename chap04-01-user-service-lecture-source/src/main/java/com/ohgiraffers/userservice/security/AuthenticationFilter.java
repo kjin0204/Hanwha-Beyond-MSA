@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -17,6 +18,12 @@ import java.util.ArrayList;
 
 @Slf4j
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+
+
+    public AuthenticationFilter(AuthenticationManager authenticationManager) {
+        /* 설명. 새로 만든 프로바이더를 알고 있는 매니저를 인지시킴 */
+        super(authenticationManager);
+    }
 
     /* 필기. 인증 시작 */
     @Override
@@ -38,7 +45,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     /* 필기. 인증 완료 */
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        super.successfulAuthentication(request, response, chain, authResult);
+        log.info("로그인 성공 이후 spring security Authentication 객체로 관리되며 넘어온: {}",authResult);
     }
 
 
