@@ -41,7 +41,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         //exchange 요청과 응답객체의 묶음
         return (exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
-            if (!request.getCookies().containsKey(HttpHeaders.AUTHORIZATION)) {
+            if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                 return onError(exchange, "No Authorization header", HttpStatus.UNAUTHORIZED); // 401 에러
             }
             /* 설명. 토큰을 들고 왔다면 추가 검증 */

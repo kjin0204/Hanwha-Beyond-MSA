@@ -1,7 +1,9 @@
 package com.ohgiraffers.userservice.service;
 
 import com.ohgiraffers.userservice.aggregate.UserEntity;
+import com.ohgiraffers.userservice.dto.ResponseOrderDTO;
 import com.ohgiraffers.userservice.dto.UserDTO;
+import com.ohgiraffers.userservice.infrastructure.OrderServiceClient;
 import com.ohgiraffers.userservice.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -28,14 +30,17 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     private ModelMapper modelMapper;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private OrderServiceClient orderServiceClient;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository
             , ModelMapper modelMapper
-            , BCryptPasswordEncoder bCryptPasswordEncoder) {
+            , BCryptPasswordEncoder bCryptPasswordEncoder
+            , OrderServiceClient orderServiceClient) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.orderServiceClient = orderServiceClient;
     }
 
     @Override
@@ -57,10 +62,16 @@ public class UserServiceImpl implements UserService {
         userRepository.save(userEntity);
     }
 
+    /* 설명. 단순 회원정보 조회 -> 회원정보 + 회원의 주문내역(Order(다른 도메인)) */
     @Override
     public UserDTO getUserById(String memNo) {
         UserEntity user = userRepository.findById(Long.parseLong(memNo)).get();
         UserDTO userDto = modelMapper.map(user, UserDTO.class);
+
+        /* 설명. 회원이 주문한 내역을 Order서비스에서 feign client 방식으로 조회해서 가져오기 */
+        List<ResponseOrderDTO> getUserOrders = orderServiceClient.getUserOrders(memNo);
+        userDto.setOrders(getUserOrders);
+
         return userDto;
     }
 

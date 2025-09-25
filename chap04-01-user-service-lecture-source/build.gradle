@@ -55,6 +55,12 @@ dependencies {
     //==================== JWT 토큰을 위한 라이브러리 ============================
 
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+
+
+    //==================== Feign client 위한 라이브러리 ============================
+    //다른 도메인과 통신할 때 필요한 라이브러리(feat. gateway를 활용한 통신)
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    //==================== Feign client 위한 라이브러리 ============================
 }
 
 dependencyManagement {
