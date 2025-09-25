@@ -33,18 +33,38 @@ spring:
 #          filters:
 #            - RewritePath=/second-service/(?<segment>.*), /$\{segment}
 # gateway의 routes 설정은 좁은 범위(더 명확한 http method 또는 경로)를 위에 작성해야 한다
-        - id: user-service
+        - id: user-service-post-user
           uri: lb://SWCAMP-USER-SERVICE
           predicates:
             - Path=/user-service/**
+            - Method=POST
           filters:
             - RewritePath=/user-service/(?<segment>.*), /$\{segment}
-        - id: order-service
+
+        - id: user-service-get-user
+          uri: lb://SWCAMP-USER-SERVICE
+          predicates:
+            - Path=/user-service/**
+            - Method=GET
+          filters:
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter # 토큰 확인을 위해 만든 필터 적용
+
+        - id: order-service-get
           uri: lb://SWCAMP-ORDER-SERVICE
           predicates:
             - Path=/order-service/**
+            - Method=GET
           filters:
             - RewritePath=/order-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter # 토큰 확인을 위해 만든 필터 적용
+
+#        - id: order-service
+#          uri: lb://SWCAMP-ORDER-SERVICE
+#          predicates:
+#            - Path=/order-service/**
+#          filters:
+#            - RewritePath=/order-service/(?<segment>.*), /$\{segment}
 
 
 

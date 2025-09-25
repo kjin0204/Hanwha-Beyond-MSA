@@ -2,6 +2,7 @@ package com.ohgiraffers.springcloudgateway.filter;
 
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.core.env.Environment;
@@ -23,8 +24,9 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
     /* 설명. application.yml에서부터 토큰관련 설정값을 불러오기 위해서 */
     private Environment env;
 
-    public AuthorizationHeaderFilter(Class<Config> configClass, Environment env) {
-        super(configClass);
+    @Autowired
+    public AuthorizationHeaderFilter(Environment env) {
+        super(Config.class);
         this.env = env;
     }
 

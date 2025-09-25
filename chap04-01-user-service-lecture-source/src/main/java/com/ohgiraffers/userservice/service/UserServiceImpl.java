@@ -57,6 +57,13 @@ public class UserServiceImpl implements UserService {
         userRepository.save(userEntity);
     }
 
+    @Override
+    public UserDTO getUserById(String memNo) {
+        UserEntity user = userRepository.findById(Long.parseLong(memNo)).get();
+        UserDTO userDto = modelMapper.map(user, UserDTO.class);
+        return userDto;
+    }
+
     /* 설명. spring security 사용 시 프로바이더에서 홀용 할 로그인용 메소드(UserDetails 타입을 반환하는 메소드) */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -64,7 +71,7 @@ public class UserServiceImpl implements UserService {
         UserEntity loginUser = userRepository.findByEmail(email);
 
         /* 설명. 사용자가 로그인 시 아이디(이메일)을 잘못 입력 햇다면 */
-        if(loginUser == null){
+        if (loginUser == null) {
             throw new UsernameNotFoundException(email + " 이메일 아이디의 유저는 존재하지 않습니다.");
         }
         /* 설명. DB에서 조회 된 해당 email의 회원이 가진 권한들을 가져와 List<GrantedAuthority>로 전환 */
@@ -72,6 +79,6 @@ public class UserServiceImpl implements UserService {
         grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
         grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_ENTERPRISE"));
 
-        return new User(loginUser.getEmail(),loginUser.getEncryptPwd(),true,true,true,true,grantedAuthorities);
+        return new User(loginUser.getEmail(), loginUser.getEncryptPwd(), true, true, true, true, grantedAuthorities);
     }
 }

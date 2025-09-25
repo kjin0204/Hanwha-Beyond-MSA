@@ -53,6 +53,8 @@ dependencies {
     // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-jackson
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
     //==================== JWT 토큰을 위한 라이브러리 ============================
+
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 }
 
 dependencyManagement {
