@@ -1,3 +1,10 @@
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
 server:
   port : 8000
 spring:
@@ -6,30 +13,41 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: 1st-service-get
-          #          uri: http://localhost:8111/
-          # 라우팅 될 마이크로 서비스(즉, application name을 작성(유레카 서버의 대쉬보드에 있는 이름 그대로 활용))
-          uri: lb://1ST-SERVICE
-          # 게이웨이 요청이 아래와 같은 패턴으로 온다면(일종의 조건문)
-          predicates:
-            - Path=/first-service/**
-          # 이후 라우팅 될 마이크로 서비스에 /first-service라는 접두사가 제외되어 이후 요청결로가 날아가게 함 + 필터 설정
-          # 필터로는 built in 필터 + custom 필터(feat. spring security) 활용 예정
-          filters:
-            - RewritePath=/first-service/(?<segment>.*), /$\{segment}
-            - AddRequestHeader=first-request, firest-request-header
-            - AddResponseHeader=first-response, first-response-header
-        - id: 1st-service-get
-          uri: lb://2ND-SERVICE
-          predicates:
-            - Path=/second-service/**
-          filters:
-            - RewritePath=/second-service/(?<segment>.*), /$\{segment}
+#        - id: 1st-service-get
+#          #          uri: http://localhost:8111/
+#          # 라우팅 될 마이크로 서비스(즉, application name을 작성(유레카 서버의 대쉬보드에 있는 이름 그대로 활용))
+#          uri: lb://1ST-SERVICE
+#          # 게이웨이 요청이 아래와 같은 패턴으로 온다면(일종의 조건문)
+#          predicates:
+#            - Path=/first-service/**
+#          # 이후 라우팅 될 마이크로 서비스에 /first-service라는 접두사가 제외되어 이후 요청결로가 날아가게 함 + 필터 설정
+#          # 필터로는 built in 필터 + custom 필터(feat. spring security) 활용 예정
+#          filters:
+#            - RewritePath=/first-service/(?<segment>.*), /$\{segment}
+#            - AddRequestHeader=first-request, firest-request-header
+#            - AddResponseHeader=first-response, first-response-header
+#        - id: 1st-service-get
+#          uri: lb://2ND-SERVICE
+#          predicates:
+#            - Path=/second-service/**
+#          filters:
+#            - RewritePath=/second-service/(?<segment>.*), /$\{segment}
 # gateway의 routes 설정은 좁은 범위(더 명확한 http method 또는 경로)를 위에 작성해야 한다
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://localhost:7861/eureka
+        - id: user-service
+          uri: lb://SWCAMP-USER-SERVICE
+          predicates:
+            - Path=/user-service/**
+          filters:
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+        - id: order-service
+          uri: lb://SWCAMP-ORDER-SERVICE
+          predicates:
+            - Path=/order-service/**
+          filters:
+            - RewritePath=/order-service/(?<segment>.*), /$\{segment}
 
+
+
+token:
+  expiration_time: 43200000
+  secret: v7o98gdK42iddFqTxH07Yjv18KbwIZWQZu7NRPeR9+ji9tOGDX2r8PO3mGptklEdEiIB0RMT066q3qb19YBfqQ==
