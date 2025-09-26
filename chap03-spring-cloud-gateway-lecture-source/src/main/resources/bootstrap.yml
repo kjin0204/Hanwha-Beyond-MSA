@@ -1,0 +1,9 @@
+# 설정용 서버 인식
+# name은 설정 파일의 이름
+# msaconfig.yml 파일은 한번은 커밋할 것!(이후로는 커밋 안해도 됨)
+# application.yml의 민감 설정 정보 삭제
+spring:
+  cloud:
+    config:
+      uri: http://localhost:8888 # 8888이 기본포트
+      name: msaconfig #내가 추가한 config 파일의 이름으로 설정

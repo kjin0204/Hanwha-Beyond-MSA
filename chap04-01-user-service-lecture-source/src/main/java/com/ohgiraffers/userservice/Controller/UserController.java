@@ -4,6 +4,7 @@ import com.ohgiraffers.userservice.dto.*;
 import com.ohgiraffers.userservice.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,6 +60,12 @@ public class UserController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(responseUser);
+    }
+
+    /* 설명. user 서비스에는 설정이 없지만 설정 서버(config server)에 있는 설정 값을 불러 올 수 있는지 테스트 */
+    @GetMapping("/test")
+    public String test(@Value("${test.message}") String message){
+        return message;
     }
 
 

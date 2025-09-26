@@ -61,6 +61,14 @@ dependencies {
     //다른 도메인과 통신할 때 필요한 라이브러리(feat. gateway를 활용한 통신)
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     //==================== Feign client 위한 라이브러리 ============================
+
+
+    // bootstrap.yml을 인지시키기 위한 dependency
+    implementation 'org.springframework.cloud:spring-cloud-starter-config'
+    implementation("org.springframework.cloud:spring-cloud-starter-bootstrap")
+
+    // spring boot의 모니터링 시스템 또는 동적 설정 변경 등 부가적인 기능 제공
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }
 
 dependencyManagement {
