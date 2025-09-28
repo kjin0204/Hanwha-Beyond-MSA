@@ -8,4 +8,4 @@ spring:
     config:
       server:
         git:
-          uri: D:\2.BootCamp\05.SourceCode\11_MSA\config
+          uri: file:///D:\2.BootCamp\05.SourceCode\11_MSA\config

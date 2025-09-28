@@ -1,8 +1,10 @@
 package com.ohgiraffers.userservice.service;
 
 import com.ohgiraffers.userservice.aggregate.UserEntity;
+import com.ohgiraffers.userservice.dto.MemberDTO;
 import com.ohgiraffers.userservice.dto.ResponseOrderDTO;
 import com.ohgiraffers.userservice.dto.UserDTO;
+import com.ohgiraffers.userservice.dto.UserImpl;
 import com.ohgiraffers.userservice.infrastructure.OrderServiceClient;
 import com.ohgiraffers.userservice.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -90,6 +92,16 @@ public class UserServiceImpl implements UserService {
         grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
         grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_ENTERPRISE"));
 
-        return new User(loginUser.getEmail(), loginUser.getEncryptPwd(), true, true, true, true, grantedAuthorities);
+//        return new User(loginUser.getEmail(), loginUser.getEncryptPwd(), true, true, true, true, grantedAuthorities);
+        MemberDTO memberDTO = new  MemberDTO();     // 이 객체에 username, password, authorities 뺴고 나머지를 담음
+        UserImpl userImpl =
+                new UserImpl(
+                        loginUser.getEmail(),
+                        loginUser.getEncryptPwd(),
+                        grantedAuthorities);
+
+        userImpl.setDetails(memberDTO);
+
+        return userImpl;
     }
 }

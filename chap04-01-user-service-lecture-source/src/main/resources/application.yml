@@ -1,6 +1,6 @@
 server:
-#  port: 8111
-  port: 0
+  port: 8111
+#  port: 0
 
 spring:
   application:
@@ -34,4 +34,27 @@ hello:
 # 12시간의 만료 시간 + HMackSha 512 비밀키
 #token:
 #  expiration_time: 43200000
+
+#설명. actuator를 추가하면서 설정한 내용(beans, info는 GET, refresh는 POST)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, beans, info
+  info:
+    env:
+      enabled: true
+    java:
+      enabled: true
+    os:
+      enabled: true
+
+info:
+  app:
+    name: User Microservice
+    description: this is a user microservice
+    version: 1.0.0
+  author: Hyeong Gyu
+  company: Ohgiraffers
+
 #  secret: v7o98gdK42iddFqTxH07Yjv18KbwIZWQZu7NRPeR9+ji9tOGDX2r8PO3mGptklEdEiIB0RMT066q3qb19YBfqQ==

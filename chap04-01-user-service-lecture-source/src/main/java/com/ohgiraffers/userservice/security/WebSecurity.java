@@ -40,8 +40,14 @@ public class WebSecurity {
 
         http.csrf(csrf -> csrf.disable());
         http.authorizeHttpRequests(authz ->
-                                authz.requestMatchers("/**").permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/**").hasRole("ADMIN")
+//                                authz.requestMatchers("/**").permitAll()
+                                authz.requestMatchers(HttpMethod.GET, "/health").permitAll()
+                                        .requestMatchers(HttpMethod.POST, "/users/**").permitAll()
+                                        .requestMatchers(HttpMethod.GET, "/test").permitAll()
+                                        .requestMatchers("/actuator/**").permitAll()
+//                                        .requestMatchers(HttpMethod.GET, "/users/**").hasRole("ENTERPRISE")
+                                        .requestMatchers(HttpMethod.GET, "/users/**").hasAnyRole("ENTERPRISE","ADMIN")
+                                        .requestMatchers(HttpMethod.GET, "/test1/**", "/test2/**").hasAnyRole("ENTERPRISE","ADMIN")
                                         .anyRequest().authenticated()
                 )
                 /* 설명. Session 방식이 아닌 JWT Token 방식을 사용하겠다. */
